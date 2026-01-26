@@ -1,0 +1,8 @@
+{
+  "name": "AnnoNest Data Intelligence OS",
+  "description": "A Unified Data Intelligence & Operations Platform for LabelNest, combining AI-driven extraction, human-in-the-loop annotation, and relationship intelligence.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
