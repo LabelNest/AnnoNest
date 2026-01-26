@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Cpu, Database, Search, Landmark, Globe, FileText, 
@@ -120,7 +119,8 @@ const ExtractionRefinery: React.FC<Props> = ({ userProfile }) => {
 
   const handleApprovalAction = async (intelId: string, action: 'APPROVE' | 'REJECT') => {
     const res = await supabaseService.processApproval("AUTO_GEN_ID", intelId, userProfile.user_id, action, "Refinery manual action.");
-    if (res.success) {
+    /** Fix: Changed .success to !res.error for PostgrestResponse compatibility */
+    if (!res.error) {
       if (activeSourceId && activeSourceType) handleSourceSelect(activeSourceId, activeSourceType);
     }
   };
@@ -150,7 +150,7 @@ const ExtractionRefinery: React.FC<Props> = ({ userProfile }) => {
         <aside className="w-80 shrink-0 flex flex-col gap-6 overflow-hidden">
            <section className="bg-card-panel dark:bg-[#0E1626] border border-border-ui dark:border-[#1C2A44] rounded-[2rem] p-6 space-y-6 shadow-xl flex-1 flex flex-col overflow-hidden">
               <div className="relative group shrink-0">
-                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={14} />
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 size={14} />
                  <select 
                   className="w-full bg-app-bg dark:bg-[#070B14] border border-border-ui dark:border-slate-800 rounded-xl pl-9 pr-3 py-2 text-[11px] text-white outline-none focus:ring-2 focus:ring-accent-primary/20 appearance-none" 
                   value={selectedEntity?.id || ''}

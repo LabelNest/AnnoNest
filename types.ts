@@ -299,6 +299,8 @@ export interface FirmIntelligenceMetric {
   avg_days_between_filings: number;
   latest_filing_date: string;
   latest_filing_year: number;
+  /** Fix: Added missing days_since_last_update property */
+  days_since_last_update: number;
 }
 
 /** Fix: Added missing FirmURL interface */
@@ -311,6 +313,8 @@ export interface FirmURL {
   verified_at?: string;
   verified_by?: string;
   tenant_id: string;
+  /** Fix: Added missing source_type property */
+  source_type: 'AUTO' | 'MANUAL';
 }
 
 /** Fix: Added missing EntityFiling interface */

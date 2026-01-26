@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, Loader2, Check, X, RefreshCw, Layers, 
@@ -88,7 +87,8 @@ const ExtractionApprovals: React.FC<Props> = ({ userProfile }) => {
               <div className="flex-1 p-12 space-y-10 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-10 text-brand-primary/5 group-hover:text-brand-primary/10 transition-colors"><Database size={180} /></div>
                 <div className="space-y-6 relative z-10">
-                   <span className="text-[10px] font-black text-blue-500 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-lg uppercase tracking-widest italic">{item.intelligence_type} Insight</span>
+                   {/** Fix: insight_type exists on EntityDocumentIntelligence, intelligence_type was a naming mismatch */}
+                   <span className="text-[10px] font-black text-blue-500 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-lg uppercase tracking-widest italic">{item.insight_type} Insight</span>
                    <p className="text-3xl text-white italic font-serif leading-tight select-all">"{item.insight}"</p>
                 </div>
                 {item.diff_preview && (

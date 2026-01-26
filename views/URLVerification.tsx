@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   CheckCircle2, XCircle, ExternalLink, RefreshCw, Loader2, 
@@ -60,7 +59,8 @@ const URLVerification: React.FC<Props> = ({ userProfile }) => {
     setSyncing(id);
     // Fixed: updateFirmURLStatus method now implemented
     const res = await supabaseService.updateFirmURLStatus(id, { url_type: type as any });
-    if (res.success) {
+    /** Fix: Changed .success to !res.error for PostgrestResponse compatibility */
+    if (!res.error) {
       setUrls(prev => prev.map(u => u.id === id ? { ...u, url_type: type as any } : u));
     }
     setSyncing(null);
@@ -74,7 +74,8 @@ const URLVerification: React.FC<Props> = ({ userProfile }) => {
       verified_at: new Date().toISOString(),
       verified_by: userProfile.user_id
     });
-    if (res.success) {
+    /** Fix: Changed .success to !res.error for PostgrestResponse compatibility */
+    if (!res.error) {
       setUrls(prev => prev.filter(u => u.id !== id));
       setSelectedIds(prev => {
         const next = new Set(prev);
@@ -92,7 +93,8 @@ const URLVerification: React.FC<Props> = ({ userProfile }) => {
     const res = await supabaseService.updateFirmURLStatus(rejectingId, {
       verification_status: 'REJECTED'
     });
-    if (res.success) {
+    /** Fix: Changed .success to !res.error for PostgrestResponse compatibility */
+    if (!res.error) {
       setUrls(prev => prev.filter(u => u.id !== rejectingId));
       setRejectingId(null);
       setRejectionReason('');
@@ -111,7 +113,8 @@ const URLVerification: React.FC<Props> = ({ userProfile }) => {
       verified_at: new Date().toISOString(),
       verified_by: userProfile.user_id
     });
-    if (res.success) {
+    /** Fix: Changed .success to !res.error for PostgrestResponse compatibility */
+    if (!res.error) {
       setUrls(prev => prev.filter(u => !selectedIds.has(u.id)));
       // Fixed: Explicitly typed generic for the new Set to avoid unknown array typing issues
       setSelectedIds(new Set<string>());
@@ -239,6 +242,7 @@ const URLVerification: React.FC<Props> = ({ userProfile }) => {
                           </select>
                        </td>
                        <td className="px-8 py-8 text-center">
+                          {/** Fix: source_type is now defined on FirmURL interface in types.ts */}
                           <span className={`px-3 py-1 rounded text-[8px] font-black uppercase border ${u.source_type === 'AUTO' ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'}`}>{u.source_type} SOURCE</span>
                        </td>
                        <td className="px-12 py-8 text-right">

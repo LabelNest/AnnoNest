@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Newspaper, RefreshCw, Search, ExternalLink, 
@@ -131,7 +130,8 @@ const NewsIntelligence: React.FC<Props> = ({ userProfile, userMap, initialNews =
       tenant_id: userProfile.tenant_id,
       source: 'REFINERY_MANUAL'
     });
-    if (res.success) {
+    /** Fix: Changed .success to !res.error for PostgrestResponse compatibility */
+    if (!res.error) {
       alert("Registry Intake Initiated: Shell record queued for clearance.");
       setShowManualIntake(false);
       setManualShell({ name: '', type: EntityType.GP });
@@ -158,7 +158,8 @@ const NewsIntelligence: React.FC<Props> = ({ userProfile, userMap, initialNews =
         verified_at: new Date().toISOString()
       }
     });
-    if (result.success) {
+    /** Fix: Changed .success to !result.error for PostgrestResponse compatibility */
+    if (!result.error) {
       if (onSync) onSync();
       loadData();
       setSelectedNews(null);

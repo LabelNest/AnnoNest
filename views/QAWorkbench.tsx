@@ -11,7 +11,8 @@ import { supabaseService } from '../services/supabaseService';
 import { QAReview, UserProfile, QAFieldDefinition } from '../types';
 
 interface Props {
-  reviewId: string;
+  /** Fix: Made reviewId optional to satisfy App.tsx routing and internal handling */
+  reviewId?: string;
   userProfile: UserProfile;
   onComplete: () => void;
   activeProjectId: string;
@@ -28,6 +29,11 @@ const QAWorkbench: React.FC<Props> = ({ reviewId, userProfile, onComplete, activ
   const [minutesSpent, setMinutesSpent] = useState(0);
 
   const loadData = async () => {
+    /** Fix: Exit early if reviewId is not provided */
+    if (!reviewId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const revs = await supabaseService.fetchQAReviews(userProfile.tenant_id, activeProjectId);
@@ -76,8 +82,9 @@ const QAWorkbench: React.FC<Props> = ({ reviewId, userProfile, onComplete, activ
       minutesSpent
     );
 
-    if (result.success) {
-      alert(`Clearance Protocol Success. Accuracy: ${result.accuracy}% | State: ${result.status.toUpperCase()}`);
+    /** Fix: Accessing accuracy_percent and qc_status from result.data if successful */
+    if (result.success && result.data) {
+      alert(`Clearance Protocol Success. Accuracy: ${result.data.accuracy_percent}% | State: ${result.data.qc_status.toUpperCase()}`);
       onComplete();
     } else {
       alert("Operational Handshake Failure.");
@@ -85,10 +92,19 @@ const QAWorkbench: React.FC<Props> = ({ reviewId, userProfile, onComplete, activ
     setSubmitting(false);
   };
 
-  if (loading || !review) return (
+  if (loading) return (
     <div className="h-full flex flex-col items-center justify-center gap-6 text-accent-primary animate-pulse">
        <Loader2 className="animate-spin" size={64} />
        <p className="text-[10px] font-black uppercase tracking-[0.8em]">Initializing Audit Handshake...</p>
+    </div>
+  );
+
+  /** Fix: Added fallback UI for missing reviewId */
+  if (!reviewId || !review) return (
+    <div className="h-full flex flex-col items-center justify-center text-center p-20 opacity-20">
+       <AlertCircle size={64} className="mb-6" />
+       <p className="text-2xl font-black italic font-serif uppercase">Audit Sequence Missing</p>
+       <button onClick={onComplete} className="mt-8 text-blue-500 font-bold uppercase text-xs">Return to Backlog</button>
     </div>
   );
 

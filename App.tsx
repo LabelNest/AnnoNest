@@ -109,30 +109,21 @@ const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeProjectId, setActiveProjectId] = useState<string>('');
 
-  const [aiChat, setAiChat] = useState<{role: 'user' | 'assistant', text: string}[]>([]);
-  const [aiInput, setAiInput] = useState('');
-  const [aiProcessing, setAiProcessing] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
-  // FIRST LOGIN ENFORCEMENT
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [pwdLoading, setPwdLoading] = useState(false);
 
   useEffect(() => {
-    // Check initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      // In sandbox mode, we always initialize sessions even without real auth
-      initializeSessions();
-    }).catch(() => {
-      // If Supabase is totally unreachable, try initializing mock sessions
-      initializeSessions();
+      if (session) initializeSessions();
+      else setLoading(false);
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) initializeSessions();
+      else setLoading(false);
     });
     return () => authListener.subscription.unsubscribe();
   }, []);
@@ -150,7 +141,7 @@ const App: React.FC = () => {
         const active = sessions[0];
         setActiveSession(active);
         
-        // Fetch baseline metrics
+        // Fetch baseline metrics from real DB
         const [projList, stats, news, members] = await Promise.all([
           supabaseService.fetchProjects(active.tenant_id),
           supabaseService.fetchDataNestStats(active.tenant_id),
@@ -322,8 +313,7 @@ const App: React.FC = () => {
     </div>
   );
 
-  // If no session and no mock data, show Landing
-  if (!session && tenantSessions.length === 0) return <LandingPage onSignIn={() => initializeSessions()} />;
+  if (!session) return <LandingPage onSignIn={() => initializeSessions()} />;
 
   if (!activeSession) return (
     <div className="h-screen w-screen bg-app-bg flex flex-col items-center justify-center p-10 animate-in fade-in zoom-in-95 duration-700">
