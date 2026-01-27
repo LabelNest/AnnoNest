@@ -124,16 +124,29 @@ export const supabaseService = {
   },
 
   // --- DATA NEST ---
-  async fetchDataNestRegistry(tenantId: string, type: EntityType): Promise<any[]> {
-    const { data, error } = await supabase
-      .from('entities')
-      .select('*')
-      .eq('tenant_id', tenantId)
-      .eq('type', type)
-      .order('name', { ascending: true });
-    if (error) throw error;
-    return data || [];
-  },
+async fetchDataNestRegistry(tenantId: string, type: EntityType): Promise<any[]> {
+  const tableMap: Record<string, string> = {
+    GP: 'entities_gp',
+    LP: 'entities_lp',
+    FUND: 'entities_fund',
+    PORTCO: 'entities_portfolio_company',
+    SERVICE_PROVIDER: 'entities_service_provider',
+    DEAL: 'entities_deal'
+  };
+
+  const table = tableMap[type];
+  if (!table) return [];
+
+  const { data, error } = await supabase
+    .from(table)
+    .select('*')
+    .eq('tenant_id', tenantId)
+    .order('updated_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+},
+
 
   async fetchEntities(tenantId: string): Promise<Entity[]> {
     const { data, error } = await supabase
@@ -144,43 +157,66 @@ export const supabaseService = {
     return data || [];
   },
 
-  async fetchDataNestStats(tenantId: string) {
+ async fetchDataNestStats(tenantId: string) {
+  const tables = [
+    'entities_gp',
+    'entities_lp',
+    'entities_fund',
+    'entities_portfolio_company',
+    'entities_service_provider',
+    'entities_deal'
+  ];
+
+  let total = 0;
+
+  for (const table of tables) {
     const { count, error } = await supabase
-      .from('entities')
+      .from(table)
       .select('*', { count: 'exact', head: true })
       .eq('tenant_id', tenantId);
-    if (error) throw error;
-    return { entities_total: count || 0, integrity_index: 94.8 };
-  },
+
+    if (!error && count) {
+      total += count;
+    }
+  }
+
+  return {
+    entities_total: total,
+    integrity_index: 94.8
+  };
+},
+
 
 async createEntity(payload: any) {
   const tableMap: Record<string, string> = {
     GP: 'entities_gp',
     LP: 'entities_lp',
     FUND: 'entities_fund',
-    PORTCO: 'entities_portco',
+    PORTCO: 'entities_portfolio_company',
     SERVICE_PROVIDER: 'entities_service_provider',
     DEAL: 'entities_deal'
   };
 
   const table = tableMap[payload.type];
-
   if (!table) {
     throw new Error(`Unsupported entity type: ${payload.type}`);
   }
 
-  return await supabase
+  const { data, error } = await supabase
     .from(table)
-    .insert([{
-      name: payload.name,
+    .insert({
       tenant_id: payload.tenant_id,
-      hq_city: payload.hq_city,
       status: payload.status ?? 'active',
-      confidence_score: payload.confidence_score ?? 100
-    }])
+      headquarters_city: payload.hq_city || null,
+      data_confidence_score: payload.confidence_score ?? 100
+    })
     .select()
     .single();
+
+  if (error) throw error;
+  return data;
 }
+
 
 
   async fetchTasks(tenantId: string, projectId: string): Promise<Task[]> {
