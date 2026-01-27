@@ -1,17 +1,18 @@
 export enum EntityType {
   LP = 'LP',
   GP = 'GP',
-  FUND = 'Fund',
-  PORTCO = 'PortCo',
-  SERVICE_PROVIDER = 'Service Provider',
-  DEAL = 'Deal',
-  CONTACT = 'Contact',
-  AGRITECH = 'AgriTech',
-  HEALTHCARE = 'Healthcare',
-  BLOCKCHAIN = 'Blockchain',
-  PUBLIC_MARKET = 'Public Market',
-  OTHER = 'Other'
+  FUND = 'FUND',
+  PORTCO = 'PORTCO',
+  SERVICE_PROVIDER = 'SERVICE_PROVIDER',
+  DEAL = 'DEAL',
+  CONTACT = 'CONTACT',
+  AGRITECH = 'AGRITECH',
+  HEALTHCARE = 'HEALTHCARE',
+  BLOCKCHAIN = 'BLOCKCHAIN',
+  PUBLIC_MARKET = 'PUBLIC_MARKET',
+  OTHER = 'OTHER'
 }
+
 
 export type UserRole = 'super_admin' | 'tenant_admin' | 'manager' | 'analyst' | 'qa' | 'viewer';
 
