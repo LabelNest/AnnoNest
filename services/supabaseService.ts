@@ -14,7 +14,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export const supabaseService = {
   // --- AUTH & TENANT ---
   async getTenantSessions(): Promise<TenantSession[]> {
-    const { data, error } = await supabase.from('tenant_sessions').select('*');
+    const { data, error } = await supabase.rpc("tenant_sessions");
+
     if (error) throw error;
     return data || [];
   },
