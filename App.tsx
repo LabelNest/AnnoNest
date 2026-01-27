@@ -138,8 +138,13 @@ const App: React.FC = () => {
       const sessions = await supabaseService.getTenantSessions();
       setTenantSessions(sessions);
       if (sessions.length > 0) {
-        const active = sessions[0];
-        setActiveSession(active);
+  const authUserId = session?.user?.id;
+
+  const active =
+    sessions.find(s => s.user_id === authUserId) || sessions[0];
+
+  setActiveSession(active);
+
         
         // Fetch baseline metrics from real DB
         const [projList, stats, news, members] = await Promise.all([
