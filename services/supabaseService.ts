@@ -215,7 +215,7 @@ async createEntity(payload: any) {
 
   if (error) throw error;
   return data;
-}
+},
 
 
 
