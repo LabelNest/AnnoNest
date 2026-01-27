@@ -153,19 +153,35 @@ export const supabaseService = {
     return { entities_total: count || 0, integrity_index: 94.8 };
   },
 
-  async createEntity(payload: any) {
-    return await supabase.from('entities').insert(payload).select().single();
-  },
+async createEntity(payload: any) {
+  const tableMap: Record<string, string> = {
+    GP: 'entities_gp',
+    LP: 'entities_lp',
+    FUND: 'entities_fund',
+    PORTCO: 'entities_portco',
+    SERVICE_PROVIDER: 'entities_service_provider',
+    DEAL: 'entities_deal'
+  };
 
-  async searchDataNest(tenantId: string, query: string): Promise<any[]> {
-    const { data, error } = await supabase
-      .from('entities')
-      .select('*')
-      .eq('tenant_id', tenantId)
-      .ilike('name', `%${query}%`);
-    if (error) throw error;
-    return data || [];
-  },
+  const table = tableMap[payload.type];
+
+  if (!table) {
+    throw new Error(`Unsupported entity type: ${payload.type}`);
+  }
+
+  return await supabase
+    .from(table)
+    .insert([{
+      name: payload.name,
+      tenant_id: payload.tenant_id,
+      hq_city: payload.hq_city,
+      status: payload.status ?? 'active',
+      confidence_score: payload.confidence_score ?? 100
+    }])
+    .select()
+    .single();
+}
+
 
   async fetchTasks(tenantId: string, projectId: string): Promise<Task[]> {
     const { data, error } = await supabase
