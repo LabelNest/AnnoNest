@@ -320,11 +320,10 @@ const InstitutionalWindow: React.FC<InstitutionalWindowProps> = ({ entityId, ent
   const loadDeepData = async () => {
     setLoading(true);
     try {
-const [e, h, i] = await Promise.all([
-  supabaseService.fetchEntityById(entityType, entityId),
-  supabaseService.fetchEntityHistory(entityId),
-  supabaseService.fetchDocumentIntelligence(entityId)
-]);
+const e = await supabaseService.fetchEntityById(entityType, entityId);
+const h = await supabaseService.fetchEntityHistory(entityId);
+const i = await supabaseService.fetchDocumentIntelligence(entityId);
+
 
 setEntityData(e);
 setHistory(h);
@@ -379,8 +378,9 @@ setIntelligence(i.slice(0, 8));
                      <span className="text-[9px] font-black text-accent-primary uppercase tracking-[0.4em] bg-accent-primary/10 px-3 py-1 rounded-lg border border-accent-primary/20 italic">{entityType} Registry Node</span>
                      <span className="text-[9px] font-mono text-slate-600 uppercase">SHA: {entityId.toUpperCase().slice(0, 16)}</span>
                   </div>
-                  <h2 className="text-4xl font-black text-text-primary italic font-serif uppercase tracking-tight leading-none">{entityData.name || entityData.full_name}</h2>
-               </div>
+<h2 className="text-4xl font-black text-text-primary italic font-serif uppercase tracking-tight leading-none">
+  {entityData.company_name || entityData.fund_name || entityData.sp_name || entityData.legal_name || 'UNNAMED_ENTITY'}
+</h2>               </div>
             </div>
             
             <div className="flex items-center gap-6">
