@@ -125,6 +125,7 @@ export const supabaseService = {
 
   // --- DATA NEST ---
 async fetchDataNestRegistry(tenantId: string, type: EntityType): Promise<any[]> {
+	  console.log("DATANEST → type:", type);
 const tableMap: Record<EntityType, string> = {
   [EntityType.GP]: 'entities_gp',
   [EntityType.LP]: 'entities_lp',
