@@ -143,7 +143,7 @@ const tableMap: Record<EntityType, string> = {
     .from(table)
     .select('*')
    // .eq('tenant_id', tenantId)
-    .order('updated_at', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) throw error;
   return data || [];
