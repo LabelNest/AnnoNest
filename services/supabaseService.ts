@@ -217,6 +217,28 @@ async createEntity(payload: any) {
   return data;
 },
 
+async fetchEntityById(entityType: EntityType, id: string) {
+  const tableMap: Record<string, string> = {
+    GP: 'entities_gp',
+    LP: 'entities_lp',
+    FUND: 'entities_fund',
+    PORTCO: 'entities_portfolio_company',
+    SERVICE_PROVIDER: 'entities_service_provider',
+    DEAL: 'entities_deal'
+  };
+
+  const table = tableMap[entityType];
+  if (!table) throw new Error('Invalid entity type');
+
+  const { data, error } = await supabase
+    .from(table)
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data;
+},
 
 
   async fetchTasks(tenantId: string, projectId: string): Promise<Task[]> {

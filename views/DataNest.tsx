@@ -320,15 +320,16 @@ const InstitutionalWindow: React.FC<InstitutionalWindowProps> = ({ entityId, ent
   const loadDeepData = async () => {
     setLoading(true);
     try {
-      const [allEntities, h, i] = await Promise.all([
-        supabaseService.fetchDataNestRegistry(userProfile.tenant_id, entityType),
-        supabaseService.fetchEntityHistory(entityId),
-        supabaseService.fetchDocumentIntelligence(entityId)
-      ]);
-      const e = allEntities.find(x => x.id === entityId);
-      setEntityData(e);
-      setHistory(h);
-      setIntelligence(i.slice(0, 8));
+const [e, h, i] = await Promise.all([
+  supabaseService.fetchEntityById(entityType, entityId),
+  supabaseService.fetchEntityHistory(entityId),
+  supabaseService.fetchDocumentIntelligence(entityId)
+]);
+
+setEntityData(e);
+setHistory(h);
+setIntelligence(i.slice(0, 8));
+
     } finally {
       setLoading(false);
     }
