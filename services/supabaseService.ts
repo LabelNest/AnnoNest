@@ -125,14 +125,15 @@ export const supabaseService = {
 
   // --- DATA NEST ---
 async fetchDataNestRegistry(tenantId: string, type: EntityType): Promise<any[]> {
-  const tableMap: Record<string, string> = {
-    GP: 'entities_gp',
-    LP: 'entities_lp',
-    FUND: 'entities_fund',
-    PORTCO: 'entities_portfolio_company',
-    SERVICE_PROVIDER: 'entities_service_provider',
-    DEAL: 'entities_deal'
-  };
+const tableMap: Record<EntityType, string> = {
+  [EntityType.GP]: 'entities_gp',
+  [EntityType.LP]: 'entities_lp',
+  [EntityType.FUND]: 'entities_fund',
+  [EntityType.PORTCO]: 'entities_portfolio_company',
+  [EntityType.SERVICE_PROVIDER]: 'entities_service_provider',
+  [EntityType.DEAL]: 'entities_deal'
+};
+
 
   const table = tableMap[type];
   if (!table) return [];
@@ -188,14 +189,15 @@ async fetchDataNestRegistry(tenantId: string, type: EntityType): Promise<any[]> 
 
 
 async createEntity(payload: any) {
-  const tableMap: Record<string, string> = {
-    GP: 'entities_gp',
-    LP: 'entities_lp',
-    FUND: 'entities_fund',
-    PORTCO: 'entities_portfolio_company',
-    SERVICE_PROVIDER: 'entities_service_provider',
-    DEAL: 'entities_deal'
-  };
+ const tableMap: Record<EntityType, string> = {
+  [EntityType.GP]: 'entities_gp',
+  [EntityType.LP]: 'entities_lp',
+  [EntityType.FUND]: 'entities_fund',
+  [EntityType.PORTCO]: 'entities_portfolio_company',
+  [EntityType.SERVICE_PROVIDER]: 'entities_service_provider',
+  [EntityType.DEAL]: 'entities_deal'
+};
+
 
   const table = tableMap[payload.type];
   if (!table) {
@@ -218,14 +220,15 @@ async createEntity(payload: any) {
 },
 
 async fetchEntityById(entityType: EntityType, id: string) {
-  const tableMap: Record<string, string> = {
-    GP: 'entities_gp',
-    LP: 'entities_lp',
-    FUND: 'entities_fund',
-    PORTCO: 'entities_portfolio_company',
-    SERVICE_PROVIDER: 'entities_service_provider',
-    DEAL: 'entities_deal'
-  };
+const tableMap: Record<EntityType, string> = {
+  [EntityType.GP]: 'entities_gp',
+  [EntityType.LP]: 'entities_lp',
+  [EntityType.FUND]: 'entities_fund',
+  [EntityType.PORTCO]: 'entities_portfolio_company',
+  [EntityType.SERVICE_PROVIDER]: 'entities_service_provider',
+  [EntityType.DEAL]: 'entities_deal'
+};
+
 
   const table = tableMap[entityType];
   if (!table) throw new Error('Invalid entity type');
