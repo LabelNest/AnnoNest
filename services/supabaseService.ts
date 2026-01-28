@@ -140,7 +140,7 @@ async fetchDataNestRegistry(tenantId: string, type: EntityType): Promise<any[]> 
   const { data, error } = await supabase
     .from(table)
     .select('*')
-    .eq('tenant_id', tenantId)
+   // .eq('tenant_id', tenantId)
     .order('updated_at', { ascending: false });
 
   if (error) throw error;
